@@ -7,7 +7,7 @@ import { CreateOrderUseCase } from 'src/core/Order/applications/create-order-use
 
 interface Response {
   message: string;
-  order: PrimitiveOrder;
+  data: PrimitiveOrder;
 }
 
 @Controller(CreateOrderRoute)
@@ -19,7 +19,7 @@ export class CreateOrderController {
     const order = await this.createOrderUsecase.run(dto);
     return {
       message: 'Order created',
-      order,
+      data: order,
     };
   }
 }

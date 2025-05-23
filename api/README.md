@@ -56,10 +56,13 @@ npm run start:prod
 ## API Endpoints
 
 ### Orders
+- `GET /v1/orders` - List all orders
+
 - `POST /v1/orders` - Create a new order
   ```typescript
   interface OrderInput {
     products: string[];  // Array of product UUIDs
+    quantity: number;
     total: string;
     date: Date;
     status: 'COMPLETED' | 'PENDING' | 'ERROR';
