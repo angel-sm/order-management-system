@@ -5,11 +5,15 @@ import { PrismaService } from 'src/shared/infrastructure/databases/prisma';
 import { OrderRepository } from './domain/Order.repository';
 import { CreateOrderController } from './infrastructure/api/controllers/create-order/create-order.controller';
 import { SearchOrdersController } from './infrastructure/api/controllers/search-orders/search-orders.controller';
-import { SearchOrdersUseCase } from './applications/search-oriders-usecase/search-oriders.usecase';
+import { SearchOrdersUseCase } from './applications/search-orders-usecase/search-orders.usecase';
 import { FindOrderByIdController } from './infrastructure/api/controllers/find-order-by-id/find-order-by-id.controller';
 import { FindOrderByIdUseCase } from './applications/find-order-by-id-usecase/find-order-by-id.usecase';
+import { CacheRepository } from 'src/shared/domain/cache.respository';
+import { RedisRepository } from 'src/shared/infrastructure/repositories/redis.repository';
+import { RedisModule } from 'src/shared/redis.module';
 
 @Module({
+  imports: [RedisModule],
   controllers: [
     CreateOrderController,
     SearchOrdersController,
@@ -20,10 +24,15 @@ import { FindOrderByIdUseCase } from './applications/find-order-by-id-usecase/fi
     SearchOrdersUseCase,
     FindOrderByIdUseCase,
     PostgresRepository,
+    RedisRepository,
     PrismaService,
     {
       provide: OrderRepository,
       useExisting: PostgresRepository,
+    },
+    {
+      provide: CacheRepository,
+      useExisting: RedisRepository,
     },
   ],
   exports: [CreateOrderUseCase, SearchOrdersUseCase, FindOrderByIdUseCase],

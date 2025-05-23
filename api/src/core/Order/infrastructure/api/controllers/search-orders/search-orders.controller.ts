@@ -2,7 +2,7 @@ import { Controller, Get } from '@nestjs/common';
 
 import { SearchOrdersRoute } from '../../routes';
 import { PrimitiveOrder } from 'src/core/Order/domain/Order.entity';
-import { SearchOrdersUseCase } from 'src/core/Order/applications/search-oriders-usecase/search-oriders.usecase';
+import { SearchOrdersUseCase } from 'src/core/Order/applications/search-orders-usecase/search-orders.usecase';
 
 interface Response {
   message: string;
