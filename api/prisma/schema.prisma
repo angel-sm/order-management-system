@@ -19,7 +19,7 @@ enum OrderStatus {
   ERROR
 }
 
-model Order {
+model Orders {
   id        String      @id @default(uuid())
   products  String[]  
   quantity  Int  

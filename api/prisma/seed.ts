@@ -3,7 +3,7 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 async function main() {
-  await prisma.order.createMany({
+  await prisma.orders.createMany({
     data: [
       {
         products: ['product1', 'product2'],

@@ -25,6 +25,10 @@ export class RedisRepository extends CacheRepository {
     documents: T[],
     key: string,
   ): Promise<void> {
+    if (documents.length) {
+      return;
+    }
+
     const entries = documents.flatMap((document) => [
       `${key}:${document.id}`,
       JSON.stringify(document),

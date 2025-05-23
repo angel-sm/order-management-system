@@ -23,7 +23,10 @@ export class SearchOrdersUseCase {
     const documents = await this.orderRepository.search();
     const orders = documents.map((order) => order.toPrimitive);
 
-    await this.cacheRepository.setMany<PrimitiveOrder>(orders, 'order');
+    if (orders.length) {
+      await this.cacheRepository.setMany<PrimitiveOrder>(orders, 'order');
+    }
+
     return orders;
   }
 }

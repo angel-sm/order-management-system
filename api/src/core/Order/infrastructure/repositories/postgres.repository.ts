@@ -15,7 +15,7 @@ export class PostgresRepository extends OrderRepository {
   async create(input: Order): Promise<void> {
     try {
       const document = input.toPgDocument;
-      await this.prisma.order.create({
+      await this.prisma.orders.create({
         data: document,
       });
     } catch (error) {
@@ -26,7 +26,7 @@ export class PostgresRepository extends OrderRepository {
 
   async search(): Promise<Order[]> {
     try {
-      const documents = await this.prisma.order.findMany();
+      const documents = await this.prisma.orders.findMany();
       const oriders = documents.map((doc) =>
         Order.create({
           products: doc.products,
@@ -49,7 +49,7 @@ export class PostgresRepository extends OrderRepository {
 
   async findById(id: string): Promise<Order> {
     try {
-      const document = await this.prisma.order.findUnique({
+      const document = await this.prisma.orders.findUnique({
         where: {
           id,
         },
