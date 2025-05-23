@@ -17,7 +17,7 @@ export class SearchOrdersController {
   async run(): Promise<Response> {
     const orders = await this.searchOrdersUsecase.run();
     return {
-      message: 'Order created',
+      message: 'Order listed',
       data: orders,
     };
   }

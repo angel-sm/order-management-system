@@ -58,6 +58,8 @@ npm run start:prod
 ### Orders
 - `GET /v1/orders` - List all orders
 
+- `GET /v1/orders/order/:id` - Find order by id
+
 - `POST /v1/orders` - Create a new order
   ```typescript
   interface OrderInput {
