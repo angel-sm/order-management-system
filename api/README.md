@@ -71,13 +71,14 @@ docker-compose logs -f api
 PORT=3000
 NODE_ENV=development
 
-# Database
-DATABASE_URL="postgresql://user:password@localhost:5432/orders_db"
+# Redis
+REDIS_URL=redis://redis:6379
 
-# Docker Database
-POSTGRES_USER=user
-POSTGRES_PASSWORD=password
-POSTGRES_DB=orders_db
+# Database
+DATABASE_URL=postgresql://postgres:postgres@postgres:5432/order-management-system-db?schema=public
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=postgres
+POSTGRES_DB=order-management-system-db
 ```
 
 ## Running the Application
@@ -149,15 +150,21 @@ model Order {
 
 ## Docker Configuration
 
-The project includes two main services:
+The project includes three main services:
 
 1. **API Service**
    - NestJS application
    - Runs on port 3000
    - Auto-reloads in development
+   - Connects to Redis and PostgreSQL
 
-2. **Database Service**
-   - PostgreSQL database
+2. **Redis Service**
+   - Redis cache server
+   - Runs on port 6379
+   - Persists data in a Docker volume
+
+3. **Database Service**
+   - PostgreSQL 15 database
    - Runs on port 5432
    - Persists data in a Docker volume
 
@@ -165,19 +172,25 @@ The project includes two main services:
 ```yaml
 services:
   api:
-    build: .
+    build: 
+      dockerfile: Dockerfile
     ports:
       - "3000:3000"
-    depends_on:
-      - postgres
     environment:
-      - NODE_ENV=development
-      - DATABASE_URL=postgresql://user:password@postgres:5432/orders_db
+      - REDIS_URL=redis://redis:6379
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/order-management-system-db?schema=public
+
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
 
   postgres:
-    image: postgres:14
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=order-management-system-db
     ports:
       - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
 ```

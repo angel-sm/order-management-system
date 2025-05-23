@@ -11,9 +11,12 @@ import { FindOrderByIdUseCase } from './applications/find-order-by-id-usecase/fi
 import { CacheRepository } from 'src/shared/domain/cache.respository';
 import { RedisRepository } from 'src/shared/infrastructure/repositories/redis.repository';
 import { RedisModule } from 'src/shared/redis.module';
+import { RabbitModule } from 'src/shared/rabbitmq.module';
+import { RabbitRepository } from 'src/shared/infrastructure/repositories/rabbitmq.repository';
+import { NotificationsRepository } from 'src/shared/domain/notifications.repository';
 
 @Module({
-  imports: [RedisModule],
+  imports: [RedisModule, RabbitModule],
   controllers: [
     CreateOrderController,
     SearchOrdersController,
@@ -25,6 +28,7 @@ import { RedisModule } from 'src/shared/redis.module';
     FindOrderByIdUseCase,
     PostgresRepository,
     RedisRepository,
+    RabbitRepository,
     PrismaService,
     {
       provide: OrderRepository,
@@ -33,6 +37,10 @@ import { RedisModule } from 'src/shared/redis.module';
     {
       provide: CacheRepository,
       useExisting: RedisRepository,
+    },
+    {
+      provide: NotificationsRepository,
+      useExisting: RabbitRepository,
     },
   ],
   exports: [CreateOrderUseCase, SearchOrdersUseCase, FindOrderByIdUseCase],
