@@ -21,8 +21,11 @@ api/
 - Node.js (v16 or higher)
 - PostgreSQL
 - npm or yarn
+- Docker and Docker Compose (for containerized setup)
 
 ## Installation
+
+### Local Setup
 
 ```bash
 # Install dependencies
@@ -42,8 +45,44 @@ npx prisma migrate dev
 npx prisma db seed
 ```
 
+### Docker Setup
+
+1. Build and start the containers:
+```bash
+docker-compose up -d
+```
+
+2. The application will be available at `http://localhost:3000`
+
+To stop the containers:
+```bash
+docker-compose down
+```
+
+To view logs:
+```bash
+docker-compose logs -f api
+```
+
+## Environment Variables
+
+```env
+# Server
+PORT=3000
+NODE_ENV=development
+
+# Database
+DATABASE_URL="postgresql://user:password@localhost:5432/orders_db"
+
+# Docker Database
+POSTGRES_USER=user
+POSTGRES_PASSWORD=password
+POSTGRES_DB=orders_db
+```
+
 ## Running the Application
 
+### Local Development
 ```bash
 # Development mode
 npm run start:dev
@@ -51,6 +90,21 @@ npm run start:dev
 # Production mode
 npm run build
 npm run start:prod
+```
+
+### Docker Commands
+```bash
+# Rebuild containers
+docker-compose build
+
+# Start services
+docker-compose up -d
+
+# Stop services
+docker-compose down
+
+# View logs
+docker-compose logs -f
 ```
 
 ## API Endpoints
@@ -91,4 +145,39 @@ model Order {
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
 }
+```
+
+## Docker Configuration
+
+The project includes two main services:
+
+1. **API Service**
+   - NestJS application
+   - Runs on port 3000
+   - Auto-reloads in development
+
+2. **Database Service**
+   - PostgreSQL database
+   - Runs on port 5432
+   - Persists data in a Docker volume
+
+### Docker Compose Services
+```yaml
+services:
+  api:
+    build: .
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=postgresql://user:password@postgres:5432/orders_db
+
+  postgres:
+    image: postgres:14
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
 ```
