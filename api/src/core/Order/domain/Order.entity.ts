@@ -1,11 +1,12 @@
 import { v4 as uuid, UUIDTypes } from 'uuid';
 
-type OrderStatus = 'prepared' | 'pending' | 'error';
+type OrderStatus = 'COMPLETED' | 'PENDING' | 'ERROR';
 
 export interface PrimitiveOrder {
   id: UUIDTypes;
   products: UUIDTypes[];
-  total: string;
+  quantity: number;
+  total: number;
   date: Date;
   status: OrderStatus;
   createdAt: Date;
@@ -18,7 +19,8 @@ export class Order {
   static create(data: {
     id?: UUIDTypes;
     products: UUIDTypes[];
-    total: string;
+    quantity: number;
+    total: number;
     date: Date;
     status: OrderStatus;
     createdAt?: Date;
@@ -27,6 +29,7 @@ export class Order {
     return new Order({
       id: data.id ?? uuid(),
       products: data.products,
+      quantity: data.quantity,
       total: data.total,
       date: data.date,
       status: data.status,
