@@ -1,4 +1,4 @@
-import { Controller, Get, Param, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, Request, UseGuards } from '@nestjs/common';
 
 import { FindOrderByIdRoute } from '../../routes';
 import { PrimitiveOrder } from 'src/core/Order/domain/Order.entity';
@@ -11,14 +11,27 @@ interface Response {
   data: PrimitiveOrder;
 }
 
+interface AuthUser {
+  user: {
+    id: string;
+    email: string;
+  };
+}
 @Controller(FindOrderByIdRoute)
 export class FindOrderByIdController {
   constructor(private readonly findOrderByIdUsecase: FindOrderByIdUseCase) {}
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  async run(@Param() dto: FindOrderByIdDto): Promise<Response> {
-    const order = await this.findOrderByIdUsecase.run(dto);
+  async run(
+    @Request() req: AuthUser,
+    @Param() dto: FindOrderByIdDto,
+  ): Promise<Response> {
+    const { user } = req;
+
+    if (!user) throw new Error('User not found');
+
+    const order = await this.findOrderByIdUsecase.run(dto, user.id);
     return {
       message: 'Order retrieved',
       data: order,

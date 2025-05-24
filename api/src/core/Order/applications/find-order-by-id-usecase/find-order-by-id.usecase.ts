@@ -11,14 +11,14 @@ export class FindOrderByIdUseCase {
     private readonly cacheRepository: CacheRepository,
   ) {}
 
-  async run(dto: FindOrderByIdDto): Promise<PrimitiveOrder> {
+  async run(dto: FindOrderByIdDto, user: string): Promise<PrimitiveOrder> {
     const cachedOrder = await this.cacheRepository.get<PrimitiveOrder>(
-      `order:${dto.id}`,
+      `${user}:order:${dto.id}`,
     );
 
     if (cachedOrder) return cachedOrder;
 
-    const order = await this.orderRepository.findById(dto.id);
+    const order = await this.orderRepository.findById(dto.id, user);
     return order.toPrimitive;
   }
 }

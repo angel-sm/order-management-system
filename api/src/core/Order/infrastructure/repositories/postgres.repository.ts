@@ -57,11 +57,14 @@ export class PostgresRepository extends OrderRepository {
     }
   }
 
-  async findById(id: string): Promise<Order> {
+  async findById(id: string, user: string): Promise<Order> {
     try {
       const document = await this.prisma.orders.findUnique({
         where: {
           id,
+          user: {
+            id: user,
+          },
         },
       });
 

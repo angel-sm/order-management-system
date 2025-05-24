@@ -9,9 +9,11 @@ api/
 ├── prisma/              # Database schema and migrations
 ├── src/
 │   ├── core/           # Core business logic
-│   │   └── Order/      # Order module
-│   │       ├── domain/         # Business rules and entities
-│   │       └── infrastructure/ # External implementations
+│   │   ├── Order/      # Order module
+│   │   │   ├── domain/         # Business rules and entities
+│   │   │   └── infrastructure/ # External implementations
+│   │   ├── User/       # User module
+│   │   └── Auth/       # Authentication module
 │   ├── shared/         # Shared utilities and services
 │   └── main.ts         # Application entry point
 ```
@@ -74,11 +76,20 @@ NODE_ENV=development
 # Redis
 REDIS_URL=redis://redis:6379
 
+# RabbitMQ
+RABBITMQ_URL=amqp://localhost:5672
+
+# JWT
+JWT_SECRET=your-secret-key
+
 # Database
 DATABASE_URL=postgresql://postgres:postgres@postgres:5432/order-management-system-db?schema=public
 POSTGRES_USER=postgres
 POSTGRES_PASSWORD=postgres
 POSTGRES_DB=order-management-system-db
+
+# Auth
+JWT_SECRET=conejorojo
 ```
 
 ## Running the Application
@@ -110,8 +121,26 @@ docker-compose logs -f
 
 ## API Endpoints
 
+### Authentication
+- `POST /v1/auth/signup` - Register a new user
+  ```typescript
+  interface SignupDto {
+    email: string;
+    name: string;
+    password: string;
+  }
+  ```
+
+- `POST /v1/auth/login` - Login with credentials
+  ```typescript
+  interface LoginDto {
+    email: string;
+    password: string;
+  }
+  ```
+
 ### Orders
-- `GET /v1/orders` - List all orders
+- `GET /v1/orders` - List all orders for the authenticated user
 
 - `GET /v1/orders/order/:id` - Find order by id
 
@@ -128,25 +157,46 @@ docker-compose logs -f
 
 ## Database Schema
 
-### Order Model
+### Models
 ```prisma
 enum OrderStatus {
-  prepared
-  pending
-  error
+  COMPLETED
+  PENDING
+  ERROR
 }
 
-model Order {
-  id        String      @id @default(uuid())
-  products  String[]    // Array of UUIDs
-  quantity  Int
-  total     Float
-  date      DateTime
-  status    OrderStatus
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
+model Orders {
+  id         String      @id @default(uuid())
+  products   String[]    // Array of UUIDs
+  quantity   Int
+  total      Float
+  date       DateTime
+  status     OrderStatus
+  userId     String
+  user       Users       @relation(fields: [userId], references: [id])
+  created_at DateTime    @default(now())
+  updated_at DateTime    @updatedAt
+}
+
+model Users {
+  id         String   @id @default(uuid())
+  email      String   @unique
+  name       String
+  password   String
+  orders     Orders[]
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 }
 ```
+
+## Features
+
+- **Authentication**: JWT-based authentication system
+- **User Management**: Create and manage user accounts
+- **Order Management**: Create and retrieve orders
+- **Event-driven Architecture**: Using EventEmitter for internal events
+- **Microservices Communication**: RabbitMQ integration for service-to-service communication
+- **Password Encryption**: Secure password storage using bcrypt
 
 ## Docker Configuration
 
