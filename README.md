@@ -1,25 +1,80 @@
-# Order Management System
+# Order Management System - Frontend
 
-A system for managing customer orders, inventory, and order processing.
+A React-based frontend application for the Order Management System.
+
+## Tech Stack
+
+- React
+- TypeScript
+- Mantine UI
+- Zustand (State Management)
+- Wouter (Routing)
+- Axios (API Client)
+
+## Project Structure
+
+application/
+├── src/
+│ ├── app/ # Application setup
+│ │ ├── App.tsx # Main application component with routes
+│ │ └── theme.ts # Mantine theme configuration
+│ ├── core/ # Core business logic
+│ │ ├── Auth/ # Authentication module
+│ │ │ ├── application/ # State and use cases
+│ │ │ └── infrastructure/ # API repositories
+│ │ └── Order/ # Order management module
+│ │ ├── application/ # State and use cases
+│ │ └── infrastructure/ # API repositories
+│ └── presentation/ # UI components
+│ ├── components/ # Reusable UI components
+│ │ ├── atoms/ # Basic UI elements
+│ │ ├── molecules/# Composite components
+│ │ └── organisms/# Complex components
+│ └── pages/ # Page components
+│ ├── Login.page.tsx
+│ ├── Orders.page.tsx
+│ └── Signup.page.tsx
 
 ## Features
 
-- Order creation and tracking
-- Creation order notifications 
+- User authentication (Sign in/Sign up)
+- Order management (Create, View orders)
+- Responsive UI with Mantine
 
-## Installation
+## Getting Started
+
+1. Install dependencies:
 
 ```bash
-# Clone the repository
-git clone https://github.com/angel-sm/order-management-system.git
+npm install
+```
 
-# Navigate to the project directory
-cd order-management-system
+2. Set up environment variables:
 
-## License
+```bash
+cp .env.example .env
+# Edit .env with your API URL
+```
 
-ISC
+3. Start the development server:
 
-## Author
+```bash
+npm run dev
+```
 
-angel-sm
+Available Routes
+/ - Home page (Orders management)
+
+/signin - User login
+
+/signup - User registration
+
+State Management
+The application uses Zustand for state management:
+
+useAuthStore - Manages authentication state and user information
+
+useOrderStore - Manages orders data and operations
+
+API Integration
+API calls are handled through repository classes that use Axios for HTTP requests.

@@ -36,6 +36,9 @@ export class PostgresRepository extends OrderRepository {
             id: user,
           },
         },
+        orderBy: {
+          created_at: 'desc',
+        },
       });
       const orders = documents.map((doc) =>
         Order.create({
