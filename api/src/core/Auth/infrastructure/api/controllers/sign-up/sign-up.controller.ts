@@ -3,11 +3,14 @@ import { Body, Controller, Post } from '@nestjs/common';
 import { SignupRoute } from '../../routes';
 import { SignUpUseCase } from 'src/core/Auth/applications/sign-up-usecase/sign-up.usecase';
 import { User } from 'src/core/Auth/domain/user.interface';
-import { SignupDto } from './sign-in.dto';
+import { SignupDto } from './sign-up.dto';
 
 interface Response {
   message: string;
-  data: User;
+  data: {
+    user: User;
+    accessToken: string;
+  };
 }
 
 @Controller(SignupRoute)
@@ -16,7 +19,7 @@ export class SignUpController {
 
   @Post()
   async run(@Body() dto: SignupDto): Promise<Response> {
-    const user = await this.signupUsecase.run({
+    const { accessToken, user } = await this.signupUsecase.run({
       email: dto.email,
       name: dto.name,
       password: dto.password,
@@ -24,7 +27,10 @@ export class SignUpController {
     console.log(user);
     return {
       message: 'User created',
-      data: user,
+      data: {
+        user,
+        accessToken,
+      },
     };
   }
 }

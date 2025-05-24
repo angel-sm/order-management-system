@@ -1,2 +1,4 @@
-export const SignupRoute = `/sign-up`;
-export const SigninRoute = `/sign-in`;
+const version = 'v1';
+
+export const SignupRoute = `/${version}/sign-up`;
+export const SigninRoute = `/${version}/sign-in`;
