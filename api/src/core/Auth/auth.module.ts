@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { SignUpUseCase } from './applications/sign-up-usecase/sign-up.usecase';
-import { SignUpController } from './infrastructure/api/controllers/sign-up/sign-in.controller';
+import { SignUpController } from './infrastructure/api/controllers/sign-up/sign-up.controller';
 import { JwtStrategy } from './infrastructure/strategies/jwt.strategy';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';

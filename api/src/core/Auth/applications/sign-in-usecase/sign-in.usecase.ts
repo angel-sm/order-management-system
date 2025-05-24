@@ -11,6 +11,7 @@ import { JwtService } from '@nestjs/jwt';
 
 interface Response {
   accessToken: string;
+  user: User;
 }
 
 @Injectable()
@@ -47,6 +48,7 @@ export class SignInUseCase {
 
     return {
       accessToken: this.jwtService.sign(payload),
+      user,
     };
   }
 }
