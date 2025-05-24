@@ -20,12 +20,21 @@ enum OrderStatus {
 }
 
 model Orders {
-  id        String      @id @default(uuid())
-  products  String[]  
-  quantity  Int  
-  total     Float
-  date      DateTime
-  status    OrderStatus
+  id         String      @id @default(uuid())
+  products   String[]
+  quantity   Int
+  total      Float
+  date       DateTime
+  status     OrderStatus
+  created_at DateTime    @default(now())
+  updated_at DateTime    @updatedAt
+}
+
+model Users {
+  id    String @id @default(uuid())
+  email String @unique
+  name  String
+  password String
   created_at DateTime    @default(now())
   updated_at DateTime    @updatedAt
 }
