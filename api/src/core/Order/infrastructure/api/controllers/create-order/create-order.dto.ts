@@ -14,4 +14,7 @@ export class CreateOrderDto {
 
   @IsOptional()
   status?: 'COMPLETED';
+
+  @IsString()
+  user: string;
 }

@@ -10,8 +10,10 @@ export class SearchOrdersUseCase {
     private readonly cacheRepository: CacheRepository,
   ) {}
 
-  async run(): Promise<PrimitiveOrder[]> {
-    const cachedOrders = await this.cacheRepository.getAll<string>('order:*');
+  async run(user: string): Promise<PrimitiveOrder[]> {
+    const cachedOrders = await this.cacheRepository.getAll<string>(
+      `${user}:order:*`,
+    );
 
     if (cachedOrders.length) {
       const cachedOrdersMap = cachedOrders.map(
@@ -20,7 +22,7 @@ export class SearchOrdersUseCase {
       return cachedOrdersMap;
     }
 
-    const documents = await this.orderRepository.search();
+    const documents = await this.orderRepository.search(user);
     const orders = documents.map((order) => order.toPrimitive);
 
     if (orders.length) {

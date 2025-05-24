@@ -14,6 +14,8 @@ export class SignUpUseCase {
   async run(dto: SignupDto): Promise<User> {
     const [response] = await this.eventEmitter.emitAsync('user.sign-up', dto);
 
+    console.log('response', response);
+
     if (response.error) {
       throw new BadRequestException(response.error);
     }

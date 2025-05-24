@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post, UseGuards, Request } from '@nestjs/common';
 
 import { CreateOrderRoute } from '../../routes';
 import { CreateOrderDto } from './create-order.dto';
@@ -11,14 +11,28 @@ interface Response {
   data: PrimitiveOrder;
 }
 
+interface AuthUser {
+  user: {
+    id: string;
+    email: string;
+  };
+}
+
 @Controller(CreateOrderRoute)
 export class CreateOrderController {
   constructor(private readonly createOrderUsecase: CreateOrderUseCase) {}
 
   @UseGuards(JwtAuthGuard)
   @Post()
-  async run(@Body() dto: CreateOrderDto): Promise<Response> {
-    const order = await this.createOrderUsecase.run(dto);
+  async run(
+    @Request() req: AuthUser,
+    @Body() dto: CreateOrderDto,
+  ): Promise<Response> {
+    const { user } = req;
+
+    if (!user) throw new Error('User not found');
+
+    const order = await this.createOrderUsecase.run(dto, user.id);
     return {
       message: 'Order created',
       data: order,

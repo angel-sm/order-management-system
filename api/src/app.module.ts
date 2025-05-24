@@ -5,13 +5,12 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { OrderModule } from './core/Order/order.module';
 import { UserModule } from './core/User/user.module';
 import { AuthModule } from './core/Auth/auth.module';
-
 @Module({
   imports: [
     OrderModule,
     UserModule,
     EventEmitterModule.forRoot() as any,
-    AuthModule, // Import this to enable events globally
+    AuthModule,
   ],
 })
 export class AppModule {}

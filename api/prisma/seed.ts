@@ -11,6 +11,7 @@ async function main() {
         total: 29.99,
         date: new Date('2024-05-01T10:00:00Z'),
         status: 'PENDING',
+        userId: '',
       },
       {
         products: ['product3'],
@@ -18,6 +19,7 @@ async function main() {
         total: 10.13,
         date: new Date('2024-05-02T14:30:00Z'),
         status: 'COMPLETED',
+        userId: '',
       },
     ],
   });

@@ -22,8 +22,6 @@ export class SignInUseCase {
   ) {}
 
   async run(dto: SigninDto): Promise<Response> {
-    console.log(1, dto);
-
     const [response] = await this.eventEmitter.emitAsync('user.sign-in', dto);
 
     if (!response) {

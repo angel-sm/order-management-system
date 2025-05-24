@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../../shared/infrastructure/databases/prisma';
 import { CreateDocumentError } from 'src/shared/infrastructure/errors/create-document.error';
-import { NotFoundError } from 'src/shared/infrastructure/errors/not-found.error copy';
 import { UserRepository } from '../../domain/User.repository';
 import { User } from '../../domain/User.entity';
 
@@ -24,7 +23,7 @@ export class PostgresRepository extends UserRepository {
     }
   }
 
-  async findByEmail(email: string): Promise<User> {
+  async findByEmail(email: string): Promise<User | null> {
     try {
       console.log('email', email);
       const document = await this.prisma.users.findUnique({
@@ -34,7 +33,7 @@ export class PostgresRepository extends UserRepository {
       });
 
       if (!document) {
-        throw new NotFoundError(email, 'User');
+        return null;
       }
 
       const user = User.create({

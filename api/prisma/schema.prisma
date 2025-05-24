@@ -19,6 +19,18 @@ enum OrderStatus {
   ERROR
 }
 
+model Users {
+  id         String   @id @default(uuid())
+  email      String   @unique
+  name       String
+  password   String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  // One-to-many relation
+  orders     Orders[]
+}
+
 model Orders {
   id         String      @id @default(uuid())
   products   String[]
@@ -28,13 +40,8 @@ model Orders {
   status     OrderStatus
   created_at DateTime    @default(now())
   updated_at DateTime    @updatedAt
-}
 
-model Users {
-  id    String @id @default(uuid())
-  email String @unique
-  name  String
-  password String
-  created_at DateTime    @default(now())
-  updated_at DateTime    @updatedAt
+  // Foreign key
+  userId     String
+  user       Users       @relation(fields: [userId], references: [id])
 }

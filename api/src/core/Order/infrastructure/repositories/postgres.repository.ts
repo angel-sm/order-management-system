@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { Injectable } from '@nestjs/common';
 import { OrderRepository } from '../../domain/Order.repository';
 import { PrismaService } from '../../../../shared/infrastructure/databases/prisma';
@@ -12,11 +11,16 @@ export class PostgresRepository extends OrderRepository {
     super();
   }
 
-  async create(input: Order): Promise<void> {
+  async create(input: Order, user: string): Promise<void> {
     try {
       const document = input.toPgDocument;
       await this.prisma.orders.create({
-        data: document,
+        data: {
+          ...document,
+          user: {
+            connect: { id: user },
+          },
+        },
       });
     } catch (error) {
       console.log(error);
@@ -24,11 +28,18 @@ export class PostgresRepository extends OrderRepository {
     }
   }
 
-  async search(): Promise<Order[]> {
+  async search(user: string): Promise<Order[]> {
     try {
-      const documents = await this.prisma.orders.findMany();
-      const oriders = documents.map((doc) =>
+      const documents = await this.prisma.orders.findMany({
+        where: {
+          user: {
+            id: user,
+          },
+        },
+      });
+      const orders = documents.map((doc) =>
         Order.create({
+          id: doc.id,
           products: doc.products,
           quantity: doc.quantity,
           total: doc.total,
@@ -36,11 +47,10 @@ export class PostgresRepository extends OrderRepository {
           status: doc.status,
           createdAt: doc.created_at,
           updatedAt: doc.updated_at,
-          id: doc.id,
         }),
       );
 
-      return oriders;
+      return orders;
     } catch (error) {
       console.log(error);
       return [];
