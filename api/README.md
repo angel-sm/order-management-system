@@ -1,98 +1,246 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Order Management System API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Backend service for the Order Management System built with NestJS and Prisma.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Project Structure
 
-## Description
-
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Project setup
-
-```bash
-$ npm install
+```
+api/
+├── prisma/              # Database schema and migrations
+├── src/
+│   ├── core/           # Core business logic
+│   │   ├── Order/      # Order module
+│   │   │   ├── domain/         # Business rules and entities
+│   │   │   └── infrastructure/ # External implementations
+│   │   ├── User/       # User module
+│   │   └── Auth/       # Authentication module
+│   ├── shared/         # Shared utilities and services
+│   └── main.ts         # Application entry point
 ```
 
-## Compile and run the project
+## Prerequisites
+
+- Node.js (v16 or higher)
+- PostgreSQL
+- npm or yarn
+- Docker and Docker Compose (for containerized setup)
+
+## Installation
+
+### Local Setup
 
 ```bash
-# development
-$ npm run start
+# Install dependencies
+npm install
 
-# watch mode
-$ npm run start:dev
+# Set up environment variables
+cp .env.example .env
+# Edit .env with your database credentials
 
-# production mode
-$ npm run start:prod
+# Generate Prisma client
+npx prisma generate
+
+# Run database migrations
+npx prisma migrate dev
+
+# Run seeds migrations
+npx prisma db seed
 ```
 
-## Run tests
+### Docker Setup
 
+1. Build and start the containers:
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+docker-compose up -d
 ```
 
-## Deployment
+2. The application will be available at `http://localhost:3000`
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
+To stop the containers:
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+docker-compose down
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+To view logs:
+```bash
+docker-compose logs -f api
+```
 
-## Resources
+## Environment Variables
 
-Check out a few resources that may come in handy when working with NestJS:
+```env
+# Server
+PORT=3000
+NODE_ENV=development
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+# Redis
+REDIS_URL=redis://redis:6379
 
-## Support
+# RabbitMQ
+RABBITMQ_URL=amqp://localhost:5672
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+# JWT
+JWT_SECRET=your-secret-key
 
-## Stay in touch
+# Database
+DATABASE_URL=postgresql://postgres:postgres@postgres:5432/order-management-system-db?schema=public
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=postgres
+POSTGRES_DB=order-management-system-db
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+# Auth
+JWT_SECRET=conejorojo
+```
 
-## License
+## Running the Application
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+### Local Development
+```bash
+# Development mode
+npm run start:dev
+
+# Production mode
+npm run build
+npm run start:prod
+```
+
+### Docker Commands
+```bash
+# Rebuild containers
+docker-compose build
+
+# Start services
+docker-compose up -d
+
+# Stop services
+docker-compose down
+
+# View logs
+docker-compose logs -f
+```
+
+## API Endpoints
+
+### Authentication
+- `POST /v1/auth/signup` - Register a new user
+  ```typescript
+  interface SignupDto {
+    email: string;
+    name: string;
+    password: string;
+  }
+  ```
+
+- `POST /v1/auth/login` - Login with credentials
+  ```typescript
+  interface LoginDto {
+    email: string;
+    password: string;
+  }
+  ```
+
+### Orders
+- `GET /v1/orders` - List all orders for the authenticated user
+
+- `GET /v1/orders/order/:id` - Find order by id
+
+- `POST /v1/orders` - Create a new order
+  ```typescript
+  interface OrderInput {
+    products: string[];  // Array of product UUIDs
+    quantity: number;
+    total: string;
+    date: Date;
+    status: 'COMPLETED' | 'PENDING' | 'ERROR';
+  }
+  ```
+
+## Database Schema
+
+### Models
+```prisma
+enum OrderStatus {
+  COMPLETED
+  PENDING
+  ERROR
+}
+
+model Orders {
+  id         String      @id @default(uuid())
+  products   String[]    // Array of UUIDs
+  quantity   Int
+  total      Float
+  date       DateTime
+  status     OrderStatus
+  userId     String
+  user       Users       @relation(fields: [userId], references: [id])
+  created_at DateTime    @default(now())
+  updated_at DateTime    @updatedAt
+}
+
+model Users {
+  id         String   @id @default(uuid())
+  email      String   @unique
+  name       String
+  password   String
+  orders     Orders[]
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+```
+
+## Features
+
+- **Authentication**: JWT-based authentication system
+- **User Management**: Create and manage user accounts
+- **Order Management**: Create and retrieve orders
+- **Event-driven Architecture**: Using EventEmitter for internal events
+- **Microservices Communication**: RabbitMQ integration for service-to-service communication
+- **Password Encryption**: Secure password storage using bcrypt
+
+## Docker Configuration
+
+The project includes three main services:
+
+1. **API Service**
+   - NestJS application
+   - Runs on port 3000
+   - Auto-reloads in development
+   - Connects to Redis and PostgreSQL
+
+2. **Redis Service**
+   - Redis cache server
+   - Runs on port 6379
+   - Persists data in a Docker volume
+
+3. **Database Service**
+   - PostgreSQL 15 database
+   - Runs on port 5432
+   - Persists data in a Docker volume
+
+### Docker Compose Services
+```yaml
+services:
+  api:
+    build: 
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/order-management-system-db?schema=public
+
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=order-management-system-db
+    ports:
+      - "5432:5432"
+```
